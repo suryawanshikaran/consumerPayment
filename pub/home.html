@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Payment Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: flex-end; /* Align items to the right */
+            align-items: center;
+            background-color: #333;
+            padding: 10px 15px;
+            gap: 15px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+
+        .navbar .dropdown {
+            position: relative;
+        }
+
+        .navbar .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            border-radius: 5px;
+            min-width: 200px;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar .dropdown-content a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .navbar .dropdown-content a:hover {
+            background-color: #575757;
+        }
+
+        .navbar .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content p {
+            margin-top: 10px;
+        }
+
+        .content img {
+            width: 100%;
+            max-width: 600px;
+            height: auto; /* Maintain aspect ratio */
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        @media screen and (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+            .footer {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Consumer Payment System</h1>
+    </div>
+
+    <div class="navbar">
+        <a href="home.html">Home</a>
+        <a href="consumerType.html">Consumer Type</a>
+        <a href="registration.html" class="register">New Consumer</a>
+        <a href="existingConsumer.html">Existing Consumer</a>
+        <div class="dropdown">
+            <a href="#">Blocked Consumer</a>
+            <div class="dropdown-content">
+                <a href="addConsumerBlockedList.html">Add Blocked Consumer</a>
+                <a href="blockedCosnumerPayment.html">Pay Blocked Consumer Payment</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <h2>Welcome to the Consumer Payment System</h2>
+        <p>This system allows you to manage and monitor all consumer payments effectively. Navigate using the menu to access different functionalities.</p>
+        <p>Features include consumer types, managing existing consumers, and handling payments for blocked consumers.</p>
+
+        <!-- Add the image here -->
+        <img src="https://cdn.pixabay.com/photo/2021/03/19/13/15/bill-6107551_1280.png" alt="Consumer Payment Dashboard">
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Consumer Payment System. All rights reserved.</p>
+    </div>
+
+</body>
+</html>

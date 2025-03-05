@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocked Consumer Payment Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 15px;
+            gap: 15px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+
+        .navbar .dropdown {
+            position: relative;
+        }
+
+        .navbar .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            border-radius: 5px;
+            min-width: 200px;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar .dropdown-content a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .navbar .dropdown-content a:hover {
+            background-color: #575757;
+        }
+
+        .navbar .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .form-container h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f3fe;
+            border: 1px solid #b3d4fc;
+            border-radius: 5px;
+        }
+
+        .response-container p {
+            margin: 5px 0;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        @media screen and (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+            .footer {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Consumer Payment System</h1>
+    </div>
+
+    <div class="navbar">
+        <a href="home.html">Home</a>
+        <a href="consumerType.html">Consumer Type</a>
+        <a href="registration.html" class="register">New Consumer</a>
+        <a href="existingConsumer.html">Existing Consumer</a>
+        <div class="dropdown">
+            <a href="#">Blocked Consumer</a>
+            <div class="dropdown-content">
+                <a href="addConsumerBlockedList.html">Add Blocked Consumer</a>
+                <a href="blockedCosnumerPayment.html">Pay Blocked Consumer Payment</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-container">
+            <h3>Add Blocked Consumer Payment</h3>
+            <form onsubmit="submitBlockedPayment(event)">
+                <div>
+                    <label for="blockedId">Blocked ID</label>
+                    <input type="text" id="blockedId" placeholder="Enter blocked ID" required>
+                </div>
+
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter email" required>
+                </div>
+
+                <div>
+                    <label for="mobile">Mobile</label>
+                    <input type="text" id="mobile" placeholder="Enter mobile number" required>
+                </div>
+
+                <div>
+                    <label for="paymentDate">Payment Date</label>
+                    <input type="date" id="paymentDate" required>
+                </div>
+
+                <div>
+                    <label for="paymentMethod">Payment Method</label>
+                    <input type="text" id="paymentMethod" placeholder="Enter payment method" required>
+                </div>
+
+                <div>
+                    <label for="pendingAmount">Pending Amount</label>
+                    <input type="number" id="pendingAmount" placeholder="Enter pending amount" required>
+                </div>
+
+                <div>
+                    <label for="penalty">Penalty</label>
+                    <input type="number" id="penalty" placeholder="Enter penalty" required>
+                </div>
+
+                <button type="submit">Submit Blocked Consumer Payment</button>
+            </form>
+
+            <div id="response" class="response-container" style="display: none;">
+                <p id="responseMessage"></p>
+                <p id="responseBalance"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Blocked Consumer Payment Dashboard. All rights reserved.</p>
+    </div>
+
+    <script>
+        async function submitBlockedPayment(event) {
+            event.preventDefault();
+
+            const blockedId = document.getElementById('blockedId').value;
+            const email = document.getElementById('email').value;
+            const mobile = document.getElementById('mobile').value;
+            const paymentDate = document.getElementById('paymentDate').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const pendingAmount = document.getElementById('pendingAmount').value;
+            const penalty = document.getElementById('penalty').value;
+
+            // Simple validation for mobile number (10 digits)
+            const mobilePattern = /^[0-9]{10}$/;
+            if (!mobilePattern.test(mobile)) {
+                alert("Please enter a valid 10-digit mobile number.");
+                return;
+            }
+
+            // Disable the submit button to prevent multiple submissions
+            const submitButton = document.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            try {
+                const response = await fetch('http://localhost:5555/restv2/consumerPayment/addBlockedConsumerPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        blockedId,
+                        email,
+                        mobile,
+                        paymentDate,
+                        paymentMethod,
+                        pendingAmount,
+                        penalty
+                    })
+                });
+
+                const data = await response.json();
+
+                const responseMessage = document.getElementById('responseMessage');
+                const responseBalance = document.getElementById('responseBalance');
+                const responseContainer = document.getElementById('response');
+
+                if (response.ok) {
+                    responseMessage.textContent = data.response || 'Payment Done Successfully';
+                    // responseBalance.textContent = data.newBalanceAmount || 'No balance update provided';
+                } else {
+                    responseMessage.textContent = data.response || 'Failed to process payment. Please try again.';
+                    responseBalance.textContent = '';
+                }
+
+                responseContainer.style.display = 'block';
+            } catch (error) {
+                alert('An error occurred while submitting the payment details. Please check your connection.');
+            } finally {
+                // Re-enable the submit button after the request is finished
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Blocked Consumer Payment';
+            }
+        }
+    </script>
+</body>
+</html>

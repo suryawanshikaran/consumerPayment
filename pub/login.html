@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Payment Dashboard - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            background-color: #333;
+            padding: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .reset-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        .loading-message {
+            display: none;
+            color: #333;
+        }
+
+        .success-message {
+            color: green;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        @media screen and (max-width: 768px) {
+            .footer {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Consumer Payment System</h1>
+    </div>
+
+    <div class="navbar">
+        <a href="home.html">Home</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+        <a href="registration.html" class="register">Register</a>
+        <a href="login.html" class="login">login</a>
+    </div>
+
+    <div class="content">
+        <div class="form-container">
+            <h2>Consumer Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile">Mobile</label>
+                    <input type="text" id="mobile" name="mobile" maxlength="10" required>
+                    <div class="error" id="mobileError"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="reset" class="reset-btn">Reset</button>
+                    <button type="submit" class="submit-btn">Submit</button>
+                </div>
+            </form>
+
+            <div class="loading-message" id="loadingMessage">Please wait...</div>
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Consumer Payment Dashboard. All rights reserved.</p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            // Clear messages
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('mobileError').textContent = '';
+
+            const email = document.getElementById('email').value;
+            const mobile = document.getElementById('mobile').value;
+
+            const payload = { email, mobile };
+
+            // Validate email and mobile after submission
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const mobileRegex = /^[0-9]{10}$/;
+            let isValid = true;
+
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+                isValid = false;
+            }
+
+            if (!mobileRegex.test(mobile)) {
+                document.getElementById('mobileError').textContent = 'Please enter a valid 10-digit mobile number.';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return; // Stop form submission if validation fails
+            }
+
+            const loadingMessage = document.getElementById('loadingMessage');
+            loadingMessage.style.display = 'block';
+
+            try {
+                const response = await fetch(
+                    `http://localhost:5555/restv2/consumerPayment/loginConsumer?email=${email}&mobile=${mobile}`,
+                    {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' },
+                    }
+                );
+
+                const result = await response.json();
+                loadingMessage.style.display = 'none';
+
+                if (result.response === 'login successful.') {
+                    document.getElementById('successMessage').textContent = result.response;
+                    document.getElementById('successMessage').style.display = 'block';
+                } else if (result.response === 'Email and mobile not registered.') {
+                    document.getElementById('errorMessage').textContent = result.response;
+                    document.getElementById('errorMessage').style.display = 'block';
+                } else {
+                    document.getElementById('errorMessage').textContent = 'An unexpected error occurred. Please try again.';
+                    document.getElementById('errorMessage').style.display = 'block';
+                }
+            } catch (error) {
+                loadingMessage.style.display = 'none';
+                document.getElementById('errorMessage').textContent = 'Network error. Please try again.';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

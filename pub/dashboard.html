@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consumer Payment Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* General styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background-color: #343a40;
+      color: white;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      padding: 15px 20px;
+      font-size: 18px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background-color: #007bff;
+    }
+
+    /* Content area styling */
+    .content-area {
+      margin-left: 250px;
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-area h2 {
+      margin-bottom: 20px;
+    }
+
+    .card {
+      margin-bottom: 20px;
+    }
+
+    /* Footer styling */
+    .footer {
+      background-color: #343a40;
+      color: white;
+      text-align: center;
+      padding: 10px 20px;
+      position: fixed;
+      bottom: 0;
+      left: 250px;
+      width: calc(100% - 250px);
+    }
+
+    /* Responsive styling */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+
+      .content-area {
+        margin-left: 0;
+      }
+
+      .footer {
+        left: 0;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .sidebar a {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div>
+      <a href="#home" class="active">Home</a>
+      <a href="#register" onclick="toggleSection('register')">Register Consumer</a>
+      <a href="#payment-info">Payment Information</a>
+      <a href="#logout">Logout</a>
+    </div>
+    <div>
+      <p class="text-center">© 2025 Consumer Payment</p>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="content-area">
+    <div id="home" class="section">
+      <h2>Welcome to Consumer Payment Dashboard</h2>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header bg-primary text-white">About Consumer Payments</div>
+            <div class="card-body">
+              <p>The Consumer Payment system is a secure platform that allows users to register, view, and manage their payments efficiently.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header bg-primary text-white">Get Started</div>
+            <div class="card-body">
+              <p>To start using the system, register yourself by providing your email, mobile number, and other details.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Consumer Form -->
+    <div id="register" class="section" style="display: none;">
+      <h2>Register Consumer</h2>
+      <form id="consumerForm">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
+          <label for="mobile" class="form-label">Mobile</label>
+          <input type="text" class="form-control" id="mobile" maxlength="10" required>
+        </div>
+        <div class="mb-3">
+          <label for="dob" class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" id="dob" required>
+        </div>
+        <div class="mb-3">
+          <label for="gender" class="form-label">Gender</label>
+          <select class="form-select" id="gender" required>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="walletAmount" class="form-label">Wallet Amount</label>
+          <input type="number" class="form-control" id="walletAmount" required>
+        </div>
+        <div class="mb-3">
+          <label for="address" class="form-label">Address</label>
+          <input type="text" class="form-control" id="address" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>&copy; 2025 Consumer Payment System. All rights reserved.</p>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    function toggleSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => {
+        if (section.id === sectionId) {
+          section.style.display = 'block';
+        } else {
+          section.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

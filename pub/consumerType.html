@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Type List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: flex-end; /* Align items to the right */
+            align-items: center;
+            background-color: #333;
+            padding: 10px 15px;
+            gap: 15px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+
+        .navbar .dropdown {
+            position: relative;
+        }
+
+        .navbar .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            border-radius: 5px;
+            min-width: 200px;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar .dropdown-content a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .navbar .dropdown-content a:hover {
+            background-color: #575757;
+        }
+
+        .navbar .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .form-container h3 {
+            margin-bottom: 20px;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+
+        .response-container {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        @media screen and (max-width: 768px) {
+            .footer {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Consumer Payment System</h1>
+    </div>
+
+    <div class="navbar">
+        <a href="home.html">Home</a>
+        <a href="consumerType.html">Consumer Type</a>
+        <a href="registration.html" class="register">New Consumer</a>
+        <a href="existingConsumer.html">Existing Consumer</a>
+        <div class="dropdown">
+            <a href="#">Blocked Consumer</a>
+            <div class="dropdown-content">
+                <a href="addConsumerBlockedList.html">Add Blocked Consumer</a>
+                <a href="blockedCosnumerPayment.html">Pay Blocked Consumer Payment</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-container">
+            <!-- <h3>Search Consumer Type</h3> -->
+            <form onsubmit="fetchConsumerData(event)">
+                <label for="consumerType">Select Consumer Type</label>
+                <select id="consumerType" required>
+                    <option value="">-- Select Consumer Type --</option>
+                    <option value="blocked">Blocked</option>
+                    <option value="existing">Existing</option>
+                </select>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="response-container" id="responseContainer" style="display: none;">
+            <table id="consumerTable"></table>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Consumer Type List. All rights reserved.</p>
+    </div>
+
+    <script>
+        async function fetchConsumerData(event) {
+            event.preventDefault();
+
+            const consumerType = document.getElementById('consumerType').value;
+
+            if (!consumerType) {
+                alert("Please select a consumer type.");
+                return;
+            }
+
+            const responseContainer = document.getElementById('responseContainer');
+            const consumerTable = document.getElementById('consumerTable');
+
+            // Clear the table
+            consumerTable.innerHTML = '';
+            responseContainer.style.display = 'none';
+
+            try {
+                const response = await fetch(`http://localhost:5555/restv2/consumerPayment/consumerType?consumerType=${consumerType}`);
+                const htmlText = await response.text();
+
+                if (!response.ok) {
+                    throw new Error("Error in fetching data");
+                }
+
+                const parsedData = parseHTMLToJSON(htmlText, consumerType);
+
+                if (parsedData.length === 0) {
+                    consumerTable.innerHTML = "<tr><td>No data found.</td></tr>";
+                } else {
+                    let headers = Object.keys(parsedData[0]);
+                    let tableHeaders = '<tr>';
+                    headers.forEach(header => {
+                        tableHeaders += `<th>${header}</th>`;
+                    });
+                    tableHeaders += '</tr>';
+                    consumerTable.innerHTML += tableHeaders;
+
+                    parsedData.forEach(record => {
+                        let row = '<tr>';
+                        headers.forEach(header => {
+                            row += `<td>${record[header]}</td>`;
+                        });
+                        row += '</tr>';
+                        consumerTable.innerHTML += row;
+                    });
+
+                    responseContainer.style.display = 'block';
+                }
+            } catch (error) {
+                alert("An error occurred while fetching consumer type data. Please check your connection.");
+            }
+        }
+
+        function parseHTMLToJSON(html, consumerType) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const rows = doc.querySelectorAll("table table tr");
+
+            let results = [];
+            let record = {};
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                if (cells.length === 2) {
+                    const key = cells[0].innerText.trim();
+                    const value = cells[1].innerText.trim();
+
+                    if (key === "EMAIL") {
+                        // Push the previous record if it exists
+                        if (Object.keys(record).length > 0) {
+                            results.push(record);
+                        }
+                        record = {}; // Start a new record
+                    }
+                    record[key] = value;
+                }
+            });
+
+            // Add the last record
+            if (Object.keys(record).length > 0) {
+                results.push(record);
+            }
+
+            return results;
+        }
+    </script>
+</body>
+</html>

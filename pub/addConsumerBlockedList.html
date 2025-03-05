@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Management Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 15px;
+            gap: 15px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+
+        .navbar .dropdown {
+            position: relative;
+        }
+
+        .navbar .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            border-radius: 5px;
+            min-width: 200px;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar .dropdown-content a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .navbar .dropdown-content a:hover {
+            background-color: #575757;
+        }
+
+        .navbar .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+            flex: 1; /* Allows the content area to expand and push the footer down */
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .form-container h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+        }
+
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .response-container.error {
+            background-color: #ffebee;
+            color: #d32f2f;
+            border-color: #ffcdd2;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Consumer Payment System</h1>
+    </div>
+
+    <div class="navbar">
+        <a href="home.html">Home</a>
+        <a href="consumerType.html">Consumer Type</a>
+        <a href="registration.html" class="register">New Consumer</a>
+        <a href="existingConsumer.html">Existing Consumer</a>
+        <div class="dropdown">
+            <a href="#">Blocked Consumer</a>
+            <div class="dropdown-content">
+                <a href="addConsumerBlockedList.html">Add Blocked Consumer</a>
+                <a href="blockedCosnumerPayment.html">Pay Blocked Consumer Payment</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <h3>Block Consumer Form</h3>
+        <div class="form-container">
+            <form id="blockConsumerForm" onsubmit="blockConsumer(event)">
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="blockEmail" placeholder="Enter email" required>
+                </div>
+
+                <div>
+                    <label for="mobile">Mobile</label>
+                    <input type="text" id="blockMobile" placeholder="Enter mobile number" required>
+                </div>
+
+                <div>
+                    <label for="pendingAmount">Pending Amount</label>
+                    <input type="number" id="pendingAmount" placeholder="Enter pending amount" required>
+                </div>
+
+                <div>
+                    <label for="penalty">Penalty</label>
+                    <input type="number" id="penalty" placeholder="Enter penalty" required>
+                </div>
+
+                <div>
+                    <label for="blockedReason">Blocked Reason</label>
+                    <input type="text" id="blockedReason" placeholder="Enter blocked reason" required>
+                </div>
+
+                <div>
+                    <label for="blockedDate">Blocked Date</label>
+                    <input type="date" id="blockedDate" required>
+                </div>
+
+                <button type="submit">Block Consumer</button>
+            </form>
+        </div>
+        <div class="response-container" id="blockResponseContainer"></div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Consumer Management Dashboard. All rights reserved.</p>
+    </div>
+
+    <script>
+        async function blockConsumer(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('blockEmail').value;
+            const mobile = document.getElementById('blockMobile').value;
+            const pendingAmount = document.getElementById('pendingAmount').value;
+            const penalty = document.getElementById('penalty').value;
+            const blockedReason = document.getElementById('blockedReason').value;
+            const blockedDate = document.getElementById('blockedDate').value;
+
+            const responseContainer = document.getElementById('blockResponseContainer');
+            responseContainer.style.display = 'none';
+
+            try {
+                const response = await fetch('http://localhost:5555/restv2/consumerPayment/blockedConsumer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        mobile,
+                        pendingAmount,
+                        penlty: penalty, // Match API key
+                        blockedReason,
+                        blockedDate,
+                    }),
+                });
+
+                const result = await response.json().catch(() => ({ response: 'Unexpected server response' }));
+                console.log('Server response:', result);
+
+                if (result.response) {
+                    responseContainer.innerHTML = `<strong>${result.response}</strong>`;
+                    responseContainer.classList.remove('error');
+                } else {
+                    responseContainer.innerHTML = `<strong>Error:</strong> Unexpected response from the server.`;
+                    responseContainer.classList.add('error');
+                }
+            } catch (error) {
+                console.error('Error occurred:', error);
+                responseContainer.innerHTML = `<strong>Error:</strong> Failed to block consumer. Please try again later.`;
+                responseContainer.classList.add('error');
+            }
+
+            responseContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
